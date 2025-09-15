@@ -6,7 +6,7 @@ connectDb()
 app.get("/", (req, res) => {
     res.json({
         success: true,
-        message: "server is working all fine buddy! dont worry! so it CD pipeline"
+        message: "server is working all fine buddy! dont worry! so it CD pipeline surely"
     })
 })
 
