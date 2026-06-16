@@ -1,41 +1,132 @@
-1. 
+# Learning Management System (LMS)
+
+## 1. Reset Password Flow
+
+```js
 // FOR RESET PASSWORD STEPS IN THIS PROJECT
 // since we are creating 3 pages and each page will deal wth sensitive info, for resetting password
+
 // step1- enter email, we send otp n put same otp on db of user and also its expiration time
-// step2- a new request comes in with otp and mail address to reset otp, we verify with db otp and expire time, if yes we put otpverified and send a success to client, 
-// step3 - now a new request comes in with emailaddress, new password, we check if otpVerified is true or not, if yes(optional but if expires for this is not yet there or not)- then we reset password
 
+// step2- a new request comes in with otp and mail address to reset otp,
+// we verify with db otp and expire time,
+// if yes we put otpVerified and send a success to client,
 
-2.
+// step3 - now a new request comes in with emailaddress,
+// new password,
+// we check if otpVerified is true or not,
+// if yes(optional but if expires for this is not yet there or not)- then we reset password
+```
+
+---
+
+## 2. Multer + Cloudinary
+
+```js
 multer - take image, store into local storage
-cloudinary - take image from local(public  folder) to cloudinary
+
+cloudinary - take image from local(public folder) to cloudinary
+```
+
 Multer and Cloudinary are frequently used together in Node.js applications to handle file uploads, particularly for images and videos.
-Multer is a Node.js middleware for handling multipart/form-data, which is primarily used for uploading files. It processes incoming requests that contain file data, making it accessible within your Express.js routes. Multer can temporarily store files on disk or in memory before they are further processed. 
-Cloudinary is a cloud-based service specializing in image and video management. It offers storage, manipulation, optimization, and delivery of media assets. By offloading media handling to Cloudinary, developers can reduce server load and leverage its powerful features for transformations, CDN delivery, and more -> in config folder - uploadToCloudinary(filePath)
 
-3. REDUX AUTHENTICATION IN STORING USERDATA AS STATE AND FETCHING LOGIC IS KEPT AT TOP OF App.jsx
-my problem - 
-i'm making my mern app with authentication, i 'm using react redux, sometimes when i'm in my /editprofile page and i reload, i go directly to /login
-its due to the fact that in my app.jsx i have put protected routes 
-hence protecting the routes
-so it doesn't allow me to go to editprofile or myprofile page or anything that's protected. i see my redux in browser tools tab and instead of setUserData reducer being called, and setting the userData for my user i see this(what's show in the image)
-when i go change my link at top to "/" then i see that i'm logged in and there's setUserData reducer being run and everything works well now
+- **Multer** is a Node.js middleware for handling `multipart/form-data`, primarily used for uploading files.
+- It processes incoming requests that contain file data.
+- Multer can temporarily store files on disk or in memory before they are further processed.
 
-Ahh yes 🔥 you’ve run into one of the classic MERN auth problems:
+- **Cloudinary** is a cloud-based service specializing in image and video management.
+- It offers storage, manipulation, optimization, and delivery of media assets.
+- By offloading media handling to Cloudinary, developers can reduce server load and leverage its powerful features for transformations and CDN delivery.
 
-👉 When you reload the page (/editprofile or /myprofile), Redux store is reset (because Redux state lives in memory). On reload, userData becomes null, so your <Navigate to="/login" /> fires before your getCurrentUser() hook finishes restoring the user from token/session.
+In config folder:
 
-That’s why:
+```js
+uploadToCloudinary(filePath);
+```
 
-If you first go to /, the app fetches/sets userData (dispatching setUserData), and everything works.
+---
 
-But if you directly reload /editprofile, the Redux store starts empty → userData is null → route guard redirects you to /login.
+## 3. Redux Authentication
 
-4. to select file and show that same file in the frontend we take 2 states - frontend state and backend state - frontend state has url(path of that image) which we show on frontend & backend state has the file which we upload there
+```js
+REDUX AUTHENTICATION IN STORING USERDATA AS STATE
+AND FETCHING LOGIC IS KEPT AT TOP OF App.jsx
+```
 
-5. scroll to top is just a useEffect in app.js that does window.scroll(x - 0) when pageName changes in useLocation()
+### Problem
 
-6. using recharts to draw admin graphs
+I'm making my MERN app with authentication.
+
+I'm using React Redux.
+
+Sometimes when I'm in my `/editprofile` page and I reload, I go directly to `/login`.
+
+Its due to the fact that in my `App.jsx` I have put protected routes, hence protecting the routes.
+
+So it doesn't allow me to go to editprofile or myprofile page or anything that's protected.
+
+I see my Redux in browser tools tab and instead of `setUserData` reducer being called and setting the userData for my user I see loading state.
+
+When I change my link at top to `/`, then I see that I'm logged in and `setUserData` reducer runs and everything works well.
+
+### Reason
+
+Redux store lives in memory.
+
+When page reloads:
+
+```text
+Redux store resets
+↓
+userData becomes null
+↓
+Protected Route runs first
+↓
+Navigate("/login")
+```
+
+The `getCurrentUser()` request hasn't completed yet.
+
+That's why:
+
+- Visiting `/` works because user data gets fetched first.
+- Reloading `/editprofile` redirects to login because Redux state starts empty.
+
+---
+
+## 4. File Preview Before Upload
+
+To select file and show that same file in the frontend we take **2 states**:
+
+### Frontend State
+
+Contains URL/path of image.
+
+Used to display preview on frontend.
+
+### Backend State
+
+Contains actual file object.
+
+Used for uploading to backend/cloudinary.
+
+---
+
+## 5. Scroll To Top
+
+Scroll to top is just a `useEffect` in `App.jsx` that does:
+
+```js
+window.scrollTo(0, 0);
+```
+
+when `pathname` changes using `useLocation()`.
+
+---
+
+## 6. Admin Graphs
+
+Using **Recharts** to draw admin graphs.
 
 7. 
 
