@@ -29,17 +29,17 @@ export const createCourse = asyncTryCatchErrorHandler(async (req, res, next) => 
 
 export const getPublishedCourses = asyncTryCatchErrorHandler(async (req, res, next) => {
 	try {
-		const publishedCourses = await Course.find({
+		const publishedCoursesData = await Course.find({
 			isPublished: true
 		})
 
-		if (!publishedCourses) {
+		if (!publishedCoursesData) {
 			return next(new ErrorHandler("Courses not found", 404))
 		}
 
 		res.status(200).json({
 			success: true,
-			publishedCourses,
+			publishedCoursesData,
 			message: "Published Courses fetched successfully",
 		})
 	} catch (error) {
@@ -74,30 +74,38 @@ export const getCreatorCourses = asyncTryCatchErrorHandler(async (req, res, next
 export const editCourse = asyncTryCatchErrorHandler(async (req, res, next) => {
 	try {
 		const { courseId } = req.params;
-		const { title, subtitle, description, category, level, isPublished, price } = req.body
+		const { title, subtitle, description, category, level, isPublished, price } = req.body;
+
+		// First, check if course exists
+		const course = await Course.findById(courseId);
+
+		if (!course) {
+			return next(new ErrorHandler("Course not found", 404));
+		}
 
 		let thumbnailUrl;
 		if (req.file) {
-			// we will get this path using multer, 
-			thumbnailUrl = await uploadOnCloudinary(req.file.path)
+			// Only upload if course exists
+			thumbnailUrl = await uploadOnCloudinary(req.file.path);
+			course.thumbnailUrl = thumbnailUrl
 		}
 
-		const updateData = {
-			title, subtitle, description, category, level, isPublished, price
-		}
-		if (thumbnailUrl) updateData.thumbnailUrl = thumbnailUrl;
+		if (title) course.title = title;
+		if (subtitle) course.subtitle = subtitle;
+		if (description) course.description = description;
+		if (category) course.category = category;
+		if (level) course.level = level;
+		if (typeof isPublished !== "undefined") course.isPublished = isPublished;
+		if (price) course.price = price;
 
-		const course = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
-
-		if (!course) {
-			return next(new ErrorHandler("Course not found", 404))
-		}
+		// const course = await Course.findByIdAndUpdate(courseId, updateData, { new: true });
+		await course.save()
 
 		res.status(200).json({
 			success: true,
 			course,
-			message: "Courses updated successfully",
-		})
+			message: "Course updated successfully",
+		});
 	} catch (error) {
 		next(new ErrorHandler(`update course error - ${error}`))
 	}
@@ -107,13 +115,13 @@ export const getCourseById = asyncTryCatchErrorHandler(async (req, res, next) =>
 	try {
 		const { courseId } = req.params;
 
-		const course = Course.findById(courseId)
+		const course = await Course.findById(courseId)
 
 		if (!course) {
 			return next(new ErrorHandler("Course not found", 404))
 		}
 
-		res.status(200).json({
+		return res.status(200).json({
 			success: true,
 			course,
 			message: "Fetched Coures by ID successfully",
@@ -127,7 +135,7 @@ export const deleteCourseById = asyncTryCatchErrorHandler(async (req, res, next)
 	try {
 		const { courseId } = req.params;
 
-		const course = Course.findByIdAndDelete(courseId, { new: true })
+		const course = await Course.findByIdAndDelete(courseId, { new: true })
 
 		if (!course) {
 			return next(new ErrorHandler("Course not found", 404))

@@ -6,6 +6,9 @@ import cors from "cors"
 import authRouter from "./routes/auth.js"
 import userRouter from "./routes/user.js"
 import courseRouter from "./routes/course.js"
+import lectureRouter from "./routes/lecture.js"
+import orderRouter from "./routes/order.js"
+import reviewRouter from "./routes/review.js";
 
 configDotenv({ path: "./config/config.env" })
 
@@ -25,6 +28,9 @@ app.use(cors({
 app.use("/api/auth", authRouter)
 app.use("/api/user", userRouter)
 app.use("/api/course", courseRouter)
+app.use("/api/course", lectureRouter)
+app.use("/api/order", orderRouter)
+app.use("/api/review", reviewRouter)
 
 // Using Error Middleware
 // whenever a error occurs, express looks for middleware

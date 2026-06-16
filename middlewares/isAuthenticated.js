@@ -3,6 +3,8 @@ import ErrorHandler from "../utils/ErrorHandler.js"
 
 export const isAuthenticated = async (req, res, next) => {
     let { token } = req.cookies
+    // console.log(token);
+    
     if (!token) {
         return next(new ErrorHandler("No auth cookie found", 404))
         // not such a big deal that i need to raise error
