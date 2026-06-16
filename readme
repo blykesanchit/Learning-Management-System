@@ -1,0 +1,5 @@
+1. FIRST CUSTOM HOOK  - after setting up the userRouter for getCurrentUser, we createcourses a custom hook for easier work - using this we will fetch current user - why? iss sab ko app mai dalna hai - You set up a backend route to get the current user, then make a React custom hook to fetch and use that data easily(so each component doesn't have to repeat it) in your app. This helps keep your code clean and lets your app know who is using it.
+
+
+2. important react router info
+This happens because React (and React Router) by default does not unmount and remount the component when navigating to the same route with different params (e.g., /viewcourse/abc → /viewcourse/xyz). Instead, it just updates the params and re-renders. As a result, your component's state (like selectedLecture, rating, etc.) is preserved, and only useEffects that depend on the changed params or data will re-run.
