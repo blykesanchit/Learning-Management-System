@@ -7,7 +7,8 @@ export const genToken = async (userId) => {
             expiresIn: "1d"
         })
 
-        console.log(token);
+        // console.log(token);
+        
         return token
     } catch (error) {
         console.log(error);

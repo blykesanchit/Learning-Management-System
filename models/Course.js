@@ -18,6 +18,7 @@ const schema = new mongoose.Schema({
     level: {
         type: String,
         enum: ["Beginner", "Intermediate", "Advanced"],
+        default: "Beginner"
     },
     price: {
         type: Number,
